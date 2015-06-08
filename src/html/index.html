@@ -1,0 +1,13 @@
+{{define "title"}}jabara go-scaffold{{end}}
+{{define "page.css"}}
+  {{"/css/index.css.min"|cssTag}}
+{{end}}
+{{define "page.js"}}
+  {{"/js/common/modal-dialog.js"|jsTag}}
+  {{"/js/common/inputs.js"|jsTag}}
+  {{"/js/index.js"|jsTag}}
+{{end}}
+
+{{define "contents"}}
+    <div id="page"></div>
+{{end}}
