@@ -22,3 +22,5 @@ _testmain.go
 *.exe
 *.test
 *.prof
+assets/js/.module-cache/
+src/bindata/debug/bindata_debug.go
