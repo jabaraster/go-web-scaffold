@@ -1,3 +1,4 @@
+var request = require('superagent');
 var React = require('react');
 var Bootstrap = require('react-bootstrap');
 var ButtonToolbar = Bootstrap.ButtonToolbar;

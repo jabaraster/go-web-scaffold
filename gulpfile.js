@@ -53,7 +53,7 @@ gulp.task('js', function() {
 gulp.task('html', function() {
     gulp.src('src/html/**/*.html')
         .pipe(plumber())
-        .pipe(gulp.dest('assets'))
+        .pipe(gulp.dest('assets/page'))
         .pipe(browser.reload({stream: true}))
     ;
 });

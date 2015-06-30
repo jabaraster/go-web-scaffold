@@ -21,6 +21,7 @@
     "gulp-uglify": "~1.2.0",
     "gulp-uglifycss": "~1.0.4",
     "react": "~0.13.3",
-    "react-bootstrap": "~0.23.5"
+    "react-bootstrap": "~0.23.5",
+    "superagent": "~1.2.0"
   }
 }

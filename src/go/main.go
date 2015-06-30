@@ -2,7 +2,6 @@ package main
 
 import (
 	"./env"
-	"./model"
 	"./web/handler"
 	"github.com/zenazn/goji"
 	"net/http"
@@ -15,16 +14,16 @@ const (
 func main() {
 	env.Dump()
 
-	model.SelectDb()
+	goji.Get("/model/order/", handler.AllOrdersHandler)
 
-	goji.Get("/", handler.IndexHtmlHandler)
+	goji.Get("/css/*", handler.GetAssetsHandlerWithContentType("text/css", ASSET_ROOT))
+	goji.Get("/js/*", handler.GetAssetsHandlerWithContentType("text/javascript", ASSET_ROOT))
 
-	css := handler.ContentType{Value: "text/css", AssetsRoot: ASSET_ROOT}
-	goji.Get("/css/*", css.StaticHandler)
+	goji.Get("/page/:page", handler.GetHtmlHandler(ASSET_ROOT, ASSET_ROOT))
 
-	js := handler.ContentType{Value: "text/javascript", AssetsRoot: ASSET_ROOT}
-	goji.Get("/js/*", js.StaticHandler)
+	goji.Get("/", handler.GetHtmlHandler(ASSET_ROOT+"/page", ASSET_ROOT))
 
 	goji.Get("/*", http.FileServer(http.Dir(ASSET_ROOT)))
+
 	goji.Serve()
 }
