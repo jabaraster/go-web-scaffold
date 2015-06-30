@@ -1,4 +1,1 @@
-.Page {
-  background: red;
-  border: 1px solid red;
-}
+.Page .label{font-style:bold;color:#640000;border:solid 1px red;box-shadow:1px 1px rgba(0,0,0,0.3)}
