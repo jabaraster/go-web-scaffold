@@ -29985,11 +29985,22 @@ const InputField = React.createClass({displayName: "InputField",
             value: ''
         };
     },
+    componentDidMount: function() {
+        var err = '';
+        if (this.props.required === true && this.props.initialValue.length === 0) {
+            err = '必須入力です.';
+        }
+        this.setState({ target: this.refs.textField, error: err }, function()  {
+            this.props.onValueChange({ value: this.props.initialValue, descriptor: this.props.descriptor, error: this.state.error });
+        }.bind(this));
+    },
     handleValueChange: function(e) {
         var newValue = e.target.value;
         if (this.props.required === true) {
             if (newValue.length === 0) {
-                this.setState({ error: '必須入力です.', value: newValue });
+                this.setState({ error: '必須入力です.', value: newValue }, function()  {
+                    this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor, error: this.state.error });
+                }.bind(this));
                 return;
             }
         }
@@ -29999,18 +30010,25 @@ const InputField = React.createClass({displayName: "InputField",
         }
         this.setState({ value: newValue }, function()  {
             this.setState({ error: '', value: newValue }, function()  {
-                this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor });
+                this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor, error: this.state.error });
             }.bind(this));
         }.bind(this));
     },
     render: function() {
         return (
-            React.createElement(OverlayTrigger, {trigger: "focus", overlay: React.createElement(Popover, {show: !!this.state.error, placement: "left", title: ""}, this.state.error)}, 
+            React.createElement(OverlayTrigger, {
+                trigger: "focus", 
+                placement: "right", 
+                overlay: React.createElement(Popover, {title: ""}, this.state.error?this.state.error:'OK!')
+            }, 
                 React.createElement(Input, {type: this.props.type, 
                        label: this.props.label, 
                        placeholder: this.props.placeholder, 
                        value: this.state.value, 
-                       onChange: this.handleValueChange}
+                       ref: "textField", 
+                       onChange: this.handleValueChange, 
+                       onFocus: function(e)  {return this.setState({ target: e.target });}.bind(this), 
+                       className: this.state.error?'error':''}
                 )
             )
         );
@@ -30027,43 +30045,34 @@ const AppUserEditor = React.createClass({displayName: "AppUserEditor",
             userId: '',
             userIdError: '',
             password: '',
-            passwordConfirmation: ''
+            passwordConfirmation: '',
+            inputContexts: {}
         };
     },
-    componentDidMount: function() {
-        this.resetValues();
-    },
     handleValueChange: function(e) {
-        const s = {};
-        s[e.descriptor] = e.value;
-        this.setState(s);
-    },
-    handleTextValueChange: function(propertyName, e) {
-        console.log(arguments);
-        const s = {};
-        s[propertyName] = e.target.value;
-        this.setState(s);
-    },
-    resetValues: function() {
-        if (!this.props.initialValue) {
-            return;
+        var ctx = this.state.inputContexts[e.descriptor];
+        if (!ctx) {
+            ctx = {};
+            this.state.inputContexts[e.descriptor] = ctx;
         }
-        this.setState({
-            userId: this.props.initialValues.UserId,
-            password: '',
-            passwordConfirmation: ''
-        });
+        const hasError = !!e.error;
+        ctx.error = e.error;
+        if (!e.error) {
+            ctx.value = e.value;
+        }
+        this.setState({ inputContexts: this.state.inputContexts }, function()  {return console.log(this.state.inputContexts);}.bind(this));
+    },
+    hasError: function() {
+        const errors = this.state;
+        for(var e in errors) {
+            if (errors[e] === true) {
+                return true;
+            }
+        }
+        return false;
     },
     save: function() {
-        var hasError = false;
-        if (!this.state.appUserUserId) {
-            this.setState({ hasUserIdError: true, userIdError: '必須入力です.' });
-            hasError = true;
-        }
-        if (!this.state.password) {
-        }
-
-        if (hasError) {
+        if (this.hasError()) {
             return;
         }
         // TODO
@@ -30089,8 +30098,8 @@ const AppUserEditor = React.createClass({displayName: "AppUserEditor",
                     ), 
                     React.createElement(InputField, {label: "パスワード", 
                                 required: true, 
-                                placeholder: "英数記号", 
-                                maxCharCount: 32, 
+                                placeholder: "半角英数記号", 
+                                maxCharCount: 100, 
                                 type: "password", 
                                 initialValue: this.state.password, 
                                 descriptor: "password", 
@@ -30098,8 +30107,8 @@ const AppUserEditor = React.createClass({displayName: "AppUserEditor",
                     ), 
                     React.createElement(InputField, {label: "パスワード確認", 
                                 required: true, 
-                                placeholder: "英数記号", 
-                                maxCharCount: 32, 
+                                placeholder: "半角英数記号", 
+                                maxCharCount: 100, 
                                 type: "password", 
                                 initialValue: this.state.passwordConfirmation, 
                                 descriptor: "passwordConfirmation", 
@@ -30157,7 +30166,6 @@ const AppUserList = React.createClass({displayName: "AppUserList",
         this.setState({ openDialog: false });
     },
     saveNewUser: function(e) {
-        console.log(e);
         this.setState({ openDialog: false });
     },
     render: function() {
