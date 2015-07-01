@@ -20,12 +20,12 @@ type html struct {
 
 func GetHtmlHandler(htmlAssetsRoot string, assetsRoot string) func(web.C, http.ResponseWriter, *http.Request) {
 	html := html{htmlAssetsRoot: htmlAssetsRoot, assetsRoot: assetsRoot}
-	return html.Handler
+	return html.handler
 }
 
-func (e *html) Handler(c web.C, w http.ResponseWriter, r *http.Request) {
-	fileInfo := parse(r.URL.Path)
-	data, readErr := ioutil.ReadFile(e.htmlAssetsRoot + "/" + fileInfo.directory + "/" + getPage(c) + ".html")
+func (e *html) handler(c web.C, w http.ResponseWriter, r *http.Request) {
+    fmt.Println(e.htmlAssetsRoot+"/"+getPage(c)+".html")
+	data, readErr := ioutil.ReadFile(e.htmlAssetsRoot+"/"+getPage(c)+".html")
 	if readErr != nil {
 		http.Error(w, "not found", http.StatusNotFound)
 	}

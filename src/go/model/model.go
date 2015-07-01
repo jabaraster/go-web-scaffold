@@ -35,12 +35,13 @@ func init() {
 	}
 	_db = db
 	db.LogMode(true)
-	db.DB().Ping()
 	db.CreateTable(&Product{})
 	db.CreateTable(&Order{})
 	db.CreateTable(&AppUser{})
 	db.CreateTable(&AppUserCredential{})
 	db.AutoMigrate(&Product{}, &Order{})
+
+    createAdminUserIfNecessary()
 }
 
 func UpdateDb() {

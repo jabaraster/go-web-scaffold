@@ -29956,77 +29956,236 @@ module.exports = function(arr, fn, initial){
   return curr;
 };
 },{}],240:[function(require,module,exports){
-var request = require('superagent');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var ButtonToolbar = Bootstrap.ButtonToolbar;
-var ButtonGroup = Bootstrap.ButtonGroup;
-var Button = Bootstrap.Button;
-var Modal = Bootstrap.Modal;
-var ModalTrigger = Bootstrap.ModalTrigger;
-var Glyphicon = Bootstrap.Glyphicon
+const request = require('superagent');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const Button = Bootstrap.Button;
+const Glyphicon = Bootstrap.Glyphicon;
+const Accordion = Bootstrap.Accordion;
+const Panel = Bootstrap.Panel;
+const Input = Bootstrap.Input;
+const Modal = Bootstrap.Modal;
+const Popover = Bootstrap.Popover;
+const OverlayTrigger = Bootstrap.OverlayTrigger;
 
-// Modalはコンポーネントで包まないとクローズボタンが動作しなくなる. 不可解・・・
-var ModalSample = React.createClass({displayName: "ModalSample",
-    handle: function() {
-        if (this.props.onClose() === false) {
+const InputField = React.createClass({displayName: "InputField",
+    propTypes: {
+        required: React.PropTypes.bool.isRequired,
+        placeholder: React.PropTypes.string.isRequired,
+        label: React.PropTypes.string.isRequired,
+        maxCharCount: React.PropTypes.number.isRequired,
+        type: React.PropTypes.oneOf(['text', 'password', 'textarea']).isRequired,
+        initialValue: React.PropTypes.string.isRequired,
+        descriptor: React.PropTypes.string.isRequired,
+        onValueChange: React.PropTypes.func.isRequired
+    },
+    getInitialState: function() {
+        return {
+            error: '',
+            value: ''
+        };
+    },
+    handleValueChange: function(e) {
+        var newValue = e.target.value;
+        if (this.props.required === true) {
+            if (newValue.length === 0) {
+                this.setState({ error: '必須入力です.', value: newValue });
+                return;
+            }
+        }
+        if (newValue.length > this.props.maxCharCount) {
+            this.setState({ error: '' });
             return;
         }
-        this.props.onRequestHide(); // これを呼ぶとモーダルが消える. 不可解・・・
+        this.setState({ value: newValue }, function()  {
+            this.setState({ error: '', value: newValue }, function()  {
+                this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor });
+            }.bind(this));
+        }.bind(this));
     },
     render: function() {
         return (
-           React.createElement(Modal, React.__spread({},  this.props, 
-                  {title: ("モーダルダイアログ"), 
-                  animation: true, 
-                  backdrop: false
-           }), 
-               React.createElement("div", {className: "modal-body"}, 
-                   "本文"
-               ), 
-               React.createElement("div", {className: "modal-footer"}, 
-                   React.createElement(Button, {bsStyle: "primary", onClick: this.handle}, "Close")
-               )
-           )
+            React.createElement(OverlayTrigger, {trigger: "focus", overlay: React.createElement(Popover, {show: !!this.state.error, placement: "left", title: ""}, this.state.error)}, 
+                React.createElement(Input, {type: this.props.type, 
+                       label: this.props.label, 
+                       placeholder: this.props.placeholder, 
+                       value: this.state.value, 
+                       onChange: this.handleValueChange}
+                )
+            )
         );
     }
 });
 
-var Page = React.createClass({displayName: "Page",
-    handleModalClose: function() {
-        return confirm('閉じる？');
+const AppUserEditor = React.createClass({displayName: "AppUserEditor",
+    propTypes: {
+        initialValue: React.PropTypes.object,
+        onSave: React.PropTypes.func.isRequired
+    },
+    getInitialState: function() {
+        return {
+            userId: '',
+            userIdError: '',
+            password: '',
+            passwordConfirmation: ''
+        };
+    },
+    componentDidMount: function() {
+        this.resetValues();
+    },
+    handleValueChange: function(e) {
+        const s = {};
+        s[e.descriptor] = e.value;
+        this.setState(s);
+    },
+    handleTextValueChange: function(propertyName, e) {
+        console.log(arguments);
+        const s = {};
+        s[propertyName] = e.target.value;
+        this.setState(s);
+    },
+    resetValues: function() {
+        if (!this.props.initialValue) {
+            return;
+        }
+        this.setState({
+            userId: this.props.initialValues.UserId,
+            password: '',
+            passwordConfirmation: ''
+        });
+    },
+    save: function() {
+        var hasError = false;
+        if (!this.state.appUserUserId) {
+            this.setState({ hasUserIdError: true, userIdError: '必須入力です.' });
+            hasError = true;
+        }
+        if (!this.state.password) {
+        }
+
+        if (hasError) {
+            return;
+        }
+        // TODO
+        var e = {
+            UserId: this.state.userId,
+            Password: this.state.password,
+            PasswordConfirmation: this.state.passwordConfirmation
+        };
+        this.props.onSave(e);
     },
     render: function() {
-        // onRequestHideハンドラを指定しても動かない. 不可解・・・
-        var modal = (
-            React.createElement(ModalSample, {onClose: this.handleModalClose})
+        return (
+            React.createElement("div", {className: "AppUserEditor"}, 
+                React.createElement("div", {className: "form-group"}, 
+                    React.createElement(InputField, {label: "ユーザID", 
+                                required: true, 
+                                placeholder: "メールアドレス形式", 
+                                maxCharCount: 100, 
+                                type: "text", 
+                                initialValue: this.state.userId, 
+                                descriptor: "userId", 
+                                onValueChange: this.handleValueChange}
+                    ), 
+                    React.createElement(InputField, {label: "パスワード", 
+                                required: true, 
+                                placeholder: "英数記号", 
+                                maxCharCount: 32, 
+                                type: "password", 
+                                initialValue: this.state.password, 
+                                descriptor: "password", 
+                                onValueChange: this.handleValueChange}
+                    ), 
+                    React.createElement(InputField, {label: "パスワード確認", 
+                                required: true, 
+                                placeholder: "英数記号", 
+                                maxCharCount: 32, 
+                                type: "password", 
+                                initialValue: this.state.passwordConfirmation, 
+                                descriptor: "passwordConfirmation", 
+                                onValueChange: this.handleValueChange}
+                    )
+                ), 
+                React.createElement("div", {className: "form-group"}, 
+                    React.createElement(Button, {bsStyle: "primary", onClick: this.resetValues}, React.createElement(Glyphicon, {glyph: "refresh"}), " 初期値に戻す"), 
+                    React.createElement(Button, {bsStyle: "success", onClick: this.save}, React.createElement(Glyphicon, {glyph: "ok"}), " 保存")
+                )
+            )
         );
+    }
+});
+
+const AppUserEditorDialog = React.createClass({displayName: "AppUserEditorDialog",
+    propTypes: {
+        show: React.PropTypes.bool.isRequired,
+        onSave: React.PropTypes.func.isRequired,
+        onCancel: React.PropTypes.func.isRequired
+    },
+    render: function() {
+        return (
+            React.createElement(Modal, {show: this.props.show, onHide: this.props.onCancel}, 
+                React.createElement(Modal.Header, {closeButton: true}, 
+                    React.createElement(Modal.Title, null, "Modal heading")
+                ), 
+                React.createElement(Modal.Body, null, 
+                    React.createElement(AppUserEditor, {onSave: this.props.onSave})
+                )
+            )
+        );
+    }
+});
+
+const AppUserList = React.createClass({displayName: "AppUserList",
+    propTypes: {
+    },
+    getInitialState: function() {
+        return {
+            appUsers: [],
+            openDialog: false
+        };
+    },
+    componentDidMount: function() {
+        request.get('/model/app-user/').
+            end(function(err, res)  {
+                this.setState({ appUsers: res.body });
+            }.bind(this));
+    },
+    showInputDialog: function() {
+        this.setState({ openDialog: true });
+    },
+    closeInputDialog: function() {
+        this.setState({ openDialog: false });
+    },
+    saveNewUser: function(e) {
+        console.log(e);
+        this.setState({ openDialog: false });
+    },
+    render: function() {
+        const rows = this.state.appUsers.map(function(appUser, idx)  {
+            return (
+                React.createElement(Panel, {header: appUser.UserId, eventKey: idx, key: appUser.ID}, 
+                    React.createElement(AppUserEditor, {initialValues: appUser, onSave: this.saveNewUser})
+                )
+            )
+        }.bind(this));
+        return (
+            React.createElement("div", {className: "AppUserList"}, 
+                React.createElement(Button, {onClick: this.showInputDialog, bsStyle: "primary"}, React.createElement(Glyphicon, {glyph: "plus"})), 
+                React.createElement(Accordion, {className: "app-user-row"}, 
+                    rows
+                ), 
+                React.createElement(AppUserEditorDialog, {show: this.state.openDialog, onCancel: this.closeInputDialog, onSave: this.saveNewUser})
+            )
+        );
+    }
+});
+
+const Page = React.createClass({displayName: "Page",
+    render: function() {
         return (
             React.createElement("div", {className: "Page container"}, 
-                React.createElement("h1", null, "Bootstrap Components !"), 
-                React.createElement(ButtonToolbar, null, 
-                    React.createElement(Button, {bsStyle: "default"}, "Default"), 
-                    React.createElement(Button, {bsStyle: "primary"}, "Primary"), 
-                    React.createElement(Button, {bsStyle: "success"}, "Success"), 
-                    React.createElement(Button, {bsStyle: "warning"}, "Warning"), 
-                    React.createElement(Button, {bsStyle: "danger"}, "Danger")
-                ), 
-                React.createElement("hr", null), 
-                React.createElement(ButtonGroup, null, 
-                    [1,2,3,4].map(function(e) { return (React.createElement(Button, {bsStyle: "default"}, (e + "番目"))); })
-                ), 
-                React.createElement(ButtonGroup, null, 
-                    [1,2,3,4,5,6].map(function(e) { return (React.createElement(Button, {bsStyle: "default"}, (e + "番目"))); })
-                ), 
-                React.createElement("hr", null), 
-                React.createElement(ModalTrigger, {modal: modal}, 
-                    React.createElement(Button, {bsStyle: "primary"}, React.createElement(Glyphicon, {glyph: "search"}), " ", ("Show Dialog"))
-                ), 
-                React.createElement("hr", null), 
-                React.createElement("a", {href: "", className: "btn btn-default"}, 
-                    React.createElement(Glyphicon, {glyph: "refresh"}), 
-                    "リロード"
-                )
+                React.createElement("h1", null, "ユーザ一覧"), 
+                React.createElement(AppUserList, null)
             )
         );
     }
