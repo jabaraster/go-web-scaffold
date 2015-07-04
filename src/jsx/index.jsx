@@ -1,3 +1,5 @@
+'use strict';
+
 var request = require('superagent');
 var React = require('react');
 var Bootstrap = require('react-bootstrap');

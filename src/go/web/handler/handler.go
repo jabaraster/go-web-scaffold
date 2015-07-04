@@ -18,19 +18,28 @@ type html struct {
 	assetsRoot     string
 }
 
+func GetHtmlPathHandler(htmlPath string, assetsRoot string) func(http.ResponseWriter, *http.Request) {
+    return func(w http.ResponseWriter, r *http.Request) {
+        writeHtmlResponse(htmlPath, assetsRoot, w)
+    }
+}
+
 func GetHtmlHandler(htmlAssetsRoot string, assetsRoot string) func(web.C, http.ResponseWriter, *http.Request) {
 	html := html{htmlAssetsRoot: htmlAssetsRoot, assetsRoot: assetsRoot}
 	return html.handler
 }
 
 func (e *html) handler(c web.C, w http.ResponseWriter, r *http.Request) {
-    fmt.Println(e.htmlAssetsRoot+"/"+getPage(c)+".html")
-	data, readErr := ioutil.ReadFile(e.htmlAssetsRoot+"/"+getPage(c)+".html")
+    writeHtmlResponse(e.htmlAssetsRoot+"/"+getPage(c)+".html", e.assetsRoot, w)
+}
+
+func writeHtmlResponse(htmlPath string, assetsRoot string, w http.ResponseWriter) {
+	data, readErr := ioutil.ReadFile(htmlPath)
 	if readErr != nil {
 		http.Error(w, "not found", http.StatusNotFound)
 	}
 
-	to := tagOutput{e.assetsRoot}
+	to := tagOutput{assetsRoot}
 	funcMap := template.FuncMap{
 		"jsTag":  to.getJsTag,
 		"cssTag": to.getCssTag,

@@ -20,8 +20,9 @@ func main() {
 	goji.Get("/css/*", handler.GetAssetsHandlerWithContentType("text/css", ASSET_ROOT))
 	goji.Get("/js/*", handler.GetAssetsHandlerWithContentType("text/javascript", ASSET_ROOT))
 
-    htmlHandler := handler.GetHtmlHandler(ASSET_ROOT+"/page", ASSET_ROOT)
+    htmlHandler := handler.GetHtmlHandler(ASSET_ROOT+"/html", ASSET_ROOT)
 	goji.Get("/page/:page/", htmlHandler)
+    goji.Get("/login", handler.GetHtmlPathHandler(ASSET_ROOT+"/html/login.html", ASSET_ROOT))
 	goji.Get("/", htmlHandler)
 
 	goji.Get("/*", http.FileServer(http.Dir(ASSET_ROOT)))

@@ -1,65 +1,19 @@
-const request = require('superagent');
-const React = require('react');
-const Bootstrap = require('react-bootstrap');
-const Button = Bootstrap.Button;
-const Glyphicon = Bootstrap.Glyphicon;
-const Accordion = Bootstrap.Accordion;
-const Panel = Bootstrap.Panel;
-const Input = Bootstrap.Input;
-const Modal = Bootstrap.Modal;
-const Popover = Bootstrap.Popover;
-const OverlayTrigger = Bootstrap.OverlayTrigger;
+'use strict';
 
-const InputField = React.createClass({
-    propTypes: {
-        required: React.PropTypes.bool.isRequired,
-        placeholder: React.PropTypes.string.isRequired,
-        label: React.PropTypes.string.isRequired,
-        maxCharCount: React.PropTypes.number.isRequired,
-        type: React.PropTypes.oneOf(['text', 'password', 'textarea']).isRequired,
-        initialValue: React.PropTypes.string.isRequired,
-        descriptor: React.PropTypes.string.isRequired,
-        onValueChange: React.PropTypes.func.isRequired
-    },
-    getInitialState: function() {
-        return {
-            error: '',
-            value: ''
-        };
-    },
-    handleValueChange: function(e) {
-        var newValue = e.target.value;
-        if (this.props.required === true) {
-            if (newValue.length === 0) {
-                this.setState({ error: '必須入力です.', value: newValue });
-                return;
-            }
-        }
-        if (newValue.length > this.props.maxCharCount) {
-            this.setState({ error: '' });
-            return;
-        }
-        this.setState({ value: newValue }, () => {
-            this.setState({ error: '', value: newValue }, () => {
-                this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor });
-            });
-        });
-    },
-    render: function() {
-        return (
-            <OverlayTrigger trigger='focus' overlay={<Popover show={!!this.state.error} placement="left" title="">{this.state.error}</Popover>}>
-                <Input type={this.props.type}
-                       label={this.props.label}
-                       placeholder={this.props.placeholder}
-                       value={this.state.value}
-                       onChange={this.handleValueChange}
-                />
-            </OverlayTrigger>
-        );
-    }
-});
+var request = require('superagent');
+var React = require('react');
+var Bootstrap = require('react-bootstrap');
+var Button = Bootstrap.Button;
+var Glyphicon = Bootstrap.Glyphicon;
+var Accordion = Bootstrap.Accordion;
+var Panel = Bootstrap.Panel;
+var Input = Bootstrap.Input;
+var Modal = Bootstrap.Modal;
+var Popover = Bootstrap.Popover;
+var OverlayTrigger = Bootstrap.OverlayTrigger;
+var InputField = require('./_input-field.jsx');
 
-const AppUserEditor = React.createClass({
+var AppUserEditor = React.createClass({
     propTypes: {
         initialValue: React.PropTypes.object,
         onSave: React.PropTypes.func.isRequired
@@ -76,13 +30,13 @@ const AppUserEditor = React.createClass({
         this.resetValues();
     },
     handleValueChange: function(e) {
-        const s = {};
+        var s = {};
         s[e.descriptor] = e.value;
         this.setState(s);
     },
     handleTextValueChange: function(propertyName, e) {
         console.log(arguments);
-        const s = {};
+        var s = {};
         s[propertyName] = e.target.value;
         this.setState(s);
     },
@@ -157,7 +111,7 @@ const AppUserEditor = React.createClass({
     }
 });
 
-const AppUserEditorDialog = React.createClass({
+var AppUserEditorDialog = React.createClass({
     propTypes: {
         show: React.PropTypes.bool.isRequired,
         onSave: React.PropTypes.func.isRequired,
@@ -177,7 +131,7 @@ const AppUserEditorDialog = React.createClass({
     }
 });
 
-const AppUserList = React.createClass({
+var AppUserList = React.createClass({
     propTypes: {
     },
     getInitialState: function() {
@@ -203,7 +157,7 @@ const AppUserList = React.createClass({
         this.setState({ openDialog: false });
     },
     render: function() {
-        const rows = this.state.appUsers.map((appUser, idx) => {
+        var rows = this.state.appUsers.map((appUser, idx) => {
             return (
                 <Panel header={appUser.UserId} eventKey={idx} key={appUser.ID}>
                     <AppUserEditor initialValues={appUser} onSave={this.saveNewUser} />
@@ -222,7 +176,7 @@ const AppUserList = React.createClass({
     }
 });
 
-const Page = React.createClass({
+var Page = React.createClass({
     render: function() {
         return (
             <div className="Page container">
