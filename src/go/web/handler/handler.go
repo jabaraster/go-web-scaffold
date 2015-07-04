@@ -19,9 +19,9 @@ type html struct {
 }
 
 func GetHtmlPathHandler(htmlPath string, assetsRoot string) func(http.ResponseWriter, *http.Request) {
-    return func(w http.ResponseWriter, r *http.Request) {
-        writeHtmlResponse(htmlPath, assetsRoot, w)
-    }
+	return func(w http.ResponseWriter, r *http.Request) {
+		writeHtmlResponse(htmlPath, assetsRoot, w)
+	}
 }
 
 func GetHtmlHandler(htmlAssetsRoot string, assetsRoot string) func(web.C, http.ResponseWriter, *http.Request) {
@@ -30,7 +30,7 @@ func GetHtmlHandler(htmlAssetsRoot string, assetsRoot string) func(web.C, http.R
 }
 
 func (e *html) handler(c web.C, w http.ResponseWriter, r *http.Request) {
-    writeHtmlResponse(e.htmlAssetsRoot+"/"+getPage(c)+".html", e.assetsRoot, w)
+	writeHtmlResponse(e.htmlAssetsRoot+"/"+getPage(c)+".html", e.assetsRoot, w)
 }
 
 func writeHtmlResponse(htmlPath string, assetsRoot string, w http.ResponseWriter) {

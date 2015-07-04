@@ -39,9 +39,9 @@ func init() {
 	db.CreateTable(&Order{})
 	db.CreateTable(&AppUser{})
 	db.CreateTable(&AppUserCredential{})
-	db.AutoMigrate(&Product{}, &Order{})
+	db.AutoMigrate(&Product{}, &Order{}, &AppUser{}, &AppUserCredential{})
 
-    createAdminUserIfNecessary()
+	createAdminUserIfNecessary()
 }
 
 func UpdateDb() {
