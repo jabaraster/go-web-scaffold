@@ -141,7 +141,7 @@ var AppUserList = React.createClass({
         };
     },
     componentDidMount: function() {
-        request.get('/model/app-user/').
+        request.get('/resource/app-user/').
             end((err, res) => {
                 this.setState({ appUsers: res.body });
             });

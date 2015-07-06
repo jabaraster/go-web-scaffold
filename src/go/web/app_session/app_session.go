@@ -4,8 +4,8 @@ import (
     "time"
     "net/http"
     "github.com/gorilla/sessions"
-    "fmt"
     "encoding/json"
+    "fmt"
 )
 
 
@@ -23,18 +23,32 @@ type LoginUser struct {
 }
 
 func SetLoginUser(loginUser LoginUser, w http.ResponseWriter, r *http.Request) {
-    str, err := json.Marshal(loginUser)
+    d, err := json.Marshal(loginUser)
     if err != nil {
         panic(err)
     }
-    save(sessionKey_loginUser, str, w, r)
+    save(sessionKey_loginUser, string(d), w, r)
 }
 
 func IsLogin(r *http.Request) bool {
     session := mustGetSession(r)
-    s, have := session.Values[sessionKey_loginUser]
-    fmt.Println("★ ", s, have)
-    return have
+    fmt.Println("IsLogin -> ", session)
+    _, found := session.Values[sessionKey_loginUser]
+    return found
+}
+
+func UnsetLoginUser(w http.ResponseWriter, r *http.Request) {
+    remove(sessionKey_loginUser, w, r)
+}
+
+func save(key string, value interface{}, w http.ResponseWriter, r *http.Request) {
+    session := mustGetSession(r)
+    fmt.Println("save before -> ", session)
+    session.Values[key] = value
+    fmt.Println("save after -> ", session)
+    if e := session.Save(r, w); e != nil {
+        panic(e)
+    }
 }
 
 func get(key string, r *http.Request) interface{} {
@@ -42,12 +56,11 @@ func get(key string, r *http.Request) interface{} {
     return session.Values[key]
 }
 
-func save(key string, value interface{}, w http.ResponseWriter, r *http.Request) {
-    session, err := store.Get(r, defaultSessionName)
-    if err != nil {
-        panic(err)
-    }
-    session.Values[key] = value
+func remove(key string, w http.ResponseWriter, r *http.Request) {
+    session := mustGetSession(r)
+    fmt.Println("remove before -> ", session)
+    delete(session.Values, key)
+    fmt.Println("remove after -> ", session)
     if e := session.Save(r, w); e != nil {
         panic(e)
     }

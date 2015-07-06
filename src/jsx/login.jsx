@@ -1,6 +1,8 @@
 'use strict';
 
-var request = require('superagent');
+var request = require('./_app-ajax.js');
+console.log(request);
+
 var React = require('react');
 var Bootstrap = require('react-bootstrap');
 var Button = Bootstrap.Button;
@@ -14,12 +16,8 @@ var Page = React.createClass({
         return {
             errors: {},
             userId: '',
-            password: '',
-            initialized: false
+            password: ''
         };
-    },
-    componentDidMount: function() {
-        console.log(2222);
     },
     hasError: function() {
         for (var p in this.state.errors) {
@@ -30,14 +28,6 @@ var Page = React.createClass({
         return false;
     },
     handleValueChange: function(e) {
-        if (e.descriptor === 'userId' && !this.state.initialized) {
-            setTimeout(function() {
-                console.log(React.findDOMNode(e.targetRef));
-                React.findDOMNode(e.targetRef).focus();
-            }, 1000);
-            this.setState({ initialized: true });
-        }
-
         this.state.errors[e.descriptor] = e.error;
         if (e.error) {
             return;
@@ -49,12 +39,13 @@ var Page = React.createClass({
         if (this.hasError()) {
             return;
         }
-        request.post('/model/authenticator').
+        request.post('/authenticator').
             type('form').
             send({ userId: this.state.userId, password: this.state.password }).
             end((err, res) => {
-                console.log(res.body);
-                //location.href = '/';
+                if (!res.body.error) {
+                    location.href = '/';
+                }
             });
     },
     render: function() {
@@ -67,6 +58,7 @@ var Page = React.createClass({
                             type="text"
                             initialValue={this.state.userId}
                             descriptor="userId"
+                            focus={true}
                             onValueChange={this.handleValueChange}
                 />
                 <InputField label="ユーザID"

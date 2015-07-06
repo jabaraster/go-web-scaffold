@@ -26,13 +26,15 @@ var InputField = React.createClass({
         };
     },
     componentDidMount: function() {
+        if (this.props.focus) {
+            $(React.findDOMNode(this.refs.textField)).find('input').focus();
+        }
         var err = '';
         if (this.props.required === true && this.props.initialValue.length === 0) {
             err = '必須入力です.';
         }
-        this.setState({ target: this.refs.textField, value: this.props.initialValue, error: err }, () => {
+        this.setState({ value: this.props.initialValue, error: err }, () => {
             this.props.onValueChange({
-                targetRef: this.refs.textField,
                 value: this.props.initialValue,
                 descriptor: this.props.descriptor,
                 error: this.state.error
@@ -45,7 +47,6 @@ var InputField = React.createClass({
             if (newValue.length === 0) {
                 this.setState({ error: '必須入力です.', value: newValue }, () => {
                     this.props.onValueChange({
-                        targetRef: this.refs.textField,
                         value: newValue,
                         descriptor: this.props.descriptor,
                         error: this.state.error

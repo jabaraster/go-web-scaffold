@@ -11,6 +11,11 @@ func AllAppUsersHandler(w http.ResponseWriter, r *http.Request) {
 	writeJsonResponse(model.GetAllAppUsers(), w)
 }
 
+func LogoutHandler(w http.ResponseWriter, r *http.Request) {
+    app_session.UnsetLoginUser(w, r)
+    http.Redirect(w, r, "/login", http.StatusSeeOther)
+}
+
 func AuthenticationHandler(w http.ResponseWriter, r *http.Request) {
     userId := r.FormValue("userId")
     password := r.FormValue("password")
