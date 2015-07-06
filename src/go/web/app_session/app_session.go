@@ -37,9 +37,8 @@ func IsLogin(r *http.Request) bool {
     return have
 }
 
-func get(key string, r *http.Request) interface{} {
-    session := mustGetSession(r)
-    return session.Values[key]
+func UnsetLoginUser(w http.ResponseWriter, r *http.Request) {
+    remove(sessionKey_loginUser, w, r)
 }
 
 func save(key string, value interface{}, w http.ResponseWriter, r *http.Request) {
@@ -48,6 +47,19 @@ func save(key string, value interface{}, w http.ResponseWriter, r *http.Request)
         panic(err)
     }
     session.Values[key] = value
+    if e := session.Save(r, w); e != nil {
+        panic(e)
+    }
+}
+
+func get(key string, r *http.Request) interface{} {
+    session := mustGetSession(r)
+    return session.Values[key]
+}
+
+func remove(key string, w http.ResponseWriter, r *http.Request) {
+    session := mustGetSession(r)
+    delete(session.Values, key)
     if e := session.Save(r, w); e != nil {
         panic(e)
     }

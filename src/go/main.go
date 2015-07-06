@@ -34,8 +34,9 @@ func main() {
 	htmlMux.Get("/", handler.GetHtmlPathHandler(ASSET_ROOT+"/html/index.html", ASSET_ROOT))
 
 	publicMux := web.New()
-	publicMux.Get("/login", handler.GetHtmlPathHandler(ASSET_ROOT+"/html/login.html", ASSET_ROOT))
-	publicMux.Post("/model/authenticator", handler.AuthenticationHandler);
+    publicMux.Get("/login", handler.GetHtmlPathHandler(ASSET_ROOT+"/html/login.html", ASSET_ROOT))
+	publicMux.Post("/model/authenticator", handler.AuthenticationHandler)
+    publicMux.Get("/logout", handler.LogoutHandler)
 
 	// 各MuxをURLに割り当てる
 	// MuxでもURLが登場するので、冗長と言えば冗長.
@@ -49,7 +50,8 @@ func main() {
 	defaultMux.Handle("/css/*", staticMux)
 	defaultMux.Handle("/js/*", staticMux)
 	defaultMux.Handle("/page/*", htmlMux)
-	defaultMux.Handle("/login", publicMux)
+    defaultMux.Handle("/login", publicMux)
+    defaultMux.Handle("/logout", publicMux)
 	defaultMux.Handle("/*", staticMux)
 
 	goji.Serve()
