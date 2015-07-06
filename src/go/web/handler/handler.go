@@ -178,7 +178,7 @@ func writeFile(file string, w http.ResponseWriter, r *http.Request) {
 	w.Write(data)
 }
 
-func writeJsonResponse(w http.ResponseWriter, data interface{}) {
+func writeJsonResponse(data interface{}, w http.ResponseWriter) {
 	b, jsonErr := json.Marshal(data)
 	if jsonErr != nil {
 		panic(jsonErr)

@@ -1,5 +1,6 @@
 'use strict';
 
+var $ = require('jquery');
 var React = require('react');
 var Bootstrap = require('react-bootstrap');
 var Input = Bootstrap.Input;
@@ -15,6 +16,7 @@ var InputField = React.createClass({
         type: React.PropTypes.oneOf(['text', 'password', 'textarea']).isRequired,
         initialValue: React.PropTypes.string.isRequired,
         descriptor: React.PropTypes.string.isRequired,
+        focus: React.PropTypes.bool,
         onValueChange: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
@@ -29,7 +31,12 @@ var InputField = React.createClass({
             err = '必須入力です.';
         }
         this.setState({ target: this.refs.textField, value: this.props.initialValue, error: err }, () => {
-            this.props.onValueChange({ value: this.props.initialValue, descriptor: this.props.descriptor, error: this.state.error });
+            this.props.onValueChange({
+                targetRef: this.refs.textField,
+                value: this.props.initialValue,
+                descriptor: this.props.descriptor,
+                error: this.state.error
+            });
         });
     },
     handleValueChange: function(e) {
@@ -37,7 +44,12 @@ var InputField = React.createClass({
         if (this.props.required === true) {
             if (newValue.length === 0) {
                 this.setState({ error: '必須入力です.', value: newValue }, () => {
-                    this.props.onValueChange({ value: newValue, descriptor: this.props.descriptor, error: this.state.error });
+                    this.props.onValueChange({
+                        targetRef: this.refs.textField,
+                        value: newValue,
+                        descriptor: this.props.descriptor,
+                        error: this.state.error
+                    });
                 });
                 return;
             }

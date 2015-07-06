@@ -1,6 +1,7 @@
 package model
 
 import (
+    "bytes"
 	"github.com/jinzhu/gorm"
 )
 
@@ -20,14 +21,28 @@ func GetAllAppUsers() []AppUser {
 	if err := _db.Find(&res).Error; err != nil {
 		panic(err)
 	}
-	return res
+	if res == nil {
+        return make([]AppUser, 0)
+    }
+    return res
+}
+
+func Authenticate(userId string, password string) bool {
+    credential, nf := getAppUserCredentialByUserId(_db, userId)
+    if nf != nil {
+        return false
+    }
+    b := []byte(password)
+    c := bytes.Compare(b, credential.Password)
+    return c == 0
 }
 
 const (
 	adminUserId = "ah@jabara.info"
+    adminUserPassword = "hogehoge"
 )
 
-func getAppUserByUserId(db *gorm.DB, userId string) *AppUser {
+func getAppUserByUserId(db *gorm.DB, userId string) (AppUser, NotFound) {
 	var res []AppUser
 	if err := db.Where("user_id = ?", userId).First(&res).Error; err != nil {
 		panic(err)
@@ -36,9 +51,24 @@ func getAppUserByUserId(db *gorm.DB, userId string) *AppUser {
 		panic("結果が２件以上あるのは異常事態. AppUser.UserId -> " + userId)
 	}
 	if len(res) == 1 {
-		return &res[0]
+		return res[0], nil
 	}
-	return nil
+	return AppUser{}, NewNotFound()
+}
+
+func getAppUserCredentialByUserId(db *gorm.DB, userId string) (AppUserCredential, NotFound) {
+    var res []AppUserCredential
+    if err := db.Table("app_user_credentials").
+            Select("app_user_credentials.password").
+            Joins("inner join app_users on app_user_credentials.app_user_id = app_users.id").
+            Where("app_users.user_id = ?", userId).
+            First(&res).Error; err != nil {
+        panic(err)
+    }
+    if len(res) == 0 {
+        return AppUserCredential{}, NewNotFound()
+    }
+    return res[0], nil
 }
 
 func createAdminUserIfNecessary() {
@@ -52,11 +82,11 @@ func createAdminUserIfNecessary() {
 		}
 	}()
 
-	if adminUser := getAppUserByUserId(tx, adminUserId); adminUser != nil {
+	if _, nf := getAppUserByUserId(tx, adminUserId); nf == nil {
 		return
 	}
 	adminUser := AppUser{UserId: adminUserId}
-	credential := AppUserCredential{AppUser: adminUser, Password: []byte("hogehoge")}
+	credential := AppUserCredential{AppUser: adminUser, Password: []byte(adminUserPassword)}
 	if err := tx.Create(&credential).Error; err != nil {
 		panic(err)
 	}

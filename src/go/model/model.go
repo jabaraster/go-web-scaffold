@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	_db gorm.DB
+	_db *gorm.DB
 )
 
 func init() {
@@ -33,7 +33,7 @@ func init() {
 	if err != nil {
 		panic(err)
 	}
-	_db = db
+	_db = &db
 	db.LogMode(true)
 	db.CreateTable(&Product{})
 	db.CreateTable(&Order{})
@@ -44,36 +44,13 @@ func init() {
 	createAdminUserIfNecessary()
 }
 
-func UpdateDb() {
-	tx := _db.Begin()
-	defer func() {
-		if err := recover(); err != nil {
-			tx.Rollback()
-			panic(err)
-		} else {
-			tx.Commit()
-		}
-	}()
-
-	prod := Product{Code: "AAA"}
-
-	var result *gorm.DB
-	result = tx.Create(&prod)
-	if result.Error != nil {
-		panic(result.Error)
-	}
-
-	ord := Order{Product: prod}
-	result = tx.Create(&ord)
-	if result.Error != nil {
-		panic(result.Error)
-	}
+type NotFound interface {
+    // nodef
+}
+type notFoundImpl struct {
+    // nodef
 }
 
-func SelectDb() {
-	var orders []Order
-	_db.Preload("Product").Find(&orders)
-	for idx, order := range orders {
-		fmt.Println(idx+1, order.Product.Code)
-	}
+func NewNotFound() NotFound {
+    return notFoundImpl{}
 }

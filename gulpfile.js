@@ -30,7 +30,7 @@ gulp.task('watch-jsx', function() {
             .bundle()
             .on("error", function (err) { console.log("Error : " + err.message); })
             .pipe(source(fileName + '.js'))
-            .pipe(streamify(uglifyjs()))
+//            .pipe(streamify(uglifyjs()))
             .pipe(gulp.dest('assets/js'))
             .pipe(logger())
             ;
