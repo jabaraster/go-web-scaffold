@@ -39295,8 +39295,6 @@ module.exports = InputField;
 'use strict';
 
 var request = require('./_app-ajax.js');
-console.log(request);
-
 var React = require('react');
 var Bootstrap = require('react-bootstrap');
 var Button = Bootstrap.Button;

@@ -41,26 +41,21 @@ func UnsetLoginUser(w http.ResponseWriter, r *http.Request) {
     remove(sessionKey_loginUser, w, r)
 }
 
-func save(key string, value interface{}, w http.ResponseWriter, r *http.Request) {
-    session := mustGetSession(r)
-    fmt.Println("save before -> ", session)
-    session.Values[key] = value
-    fmt.Println("save after -> ", session)
-    if e := session.Save(r, w); e != nil {
-        panic(e)
-    }
-}
-
 func get(key string, r *http.Request) interface{} {
     session := mustGetSession(r)
     return session.Values[key]
 }
 
+func save(key string, value interface{}, w http.ResponseWriter, r *http.Request) {
+    session := mustGetSession(r)
+    session.Values[key] = value
+    if e := session.Save(r, w); e != nil {
+        panic(e)
+    }
+}
 func remove(key string, w http.ResponseWriter, r *http.Request) {
     session := mustGetSession(r)
-    fmt.Println("remove before -> ", session)
     delete(session.Values, key)
-    fmt.Println("remove after -> ", session)
     if e := session.Save(r, w); e != nil {
         panic(e)
     }
