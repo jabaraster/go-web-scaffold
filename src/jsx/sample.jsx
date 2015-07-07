@@ -1,18 +1,20 @@
 'use strict';
 
-var request = require('superagent');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var ButtonToolbar = Bootstrap.ButtonToolbar;
-var ButtonGroup = Bootstrap.ButtonGroup;
-var Button = Bootstrap.Button;
-var Modal = Bootstrap.Modal;
-var ModalTrigger = Bootstrap.ModalTrigger;
-var Glyphicon = Bootstrap.Glyphicon
-var LinkButton = require('./_link-button.jsx');
+const request = require('superagent');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const ButtonToolbar = Bootstrap.ButtonToolbar;
+const ButtonGroup = Bootstrap.ButtonGroup;
+const Button = Bootstrap.Button;
+const Modal = Bootstrap.Modal;
+const ModalTrigger = Bootstrap.ModalTrigger;
+const Glyphicon = Bootstrap.Glyphicon
+const LinkButton = require('./component/link-button.jsx');
+const InputField = require('./component/input-field.jsx');
+const FormInputMixin = require('./mixin/form-input.js');
 
 // Modalはコンポーネントで包まないとクローズボタンが動作しなくなる. 不可解・・・
-var ModalSample = React.createClass({
+const ModalSample = React.createClass({
     handle: function() {
         if (this.props.onClose() === false) {
             return;
@@ -37,7 +39,14 @@ var ModalSample = React.createClass({
     }
 });
 
-var Page = React.createClass({
+const Page = React.createClass({
+    mixins: [FormInputMixin],
+    afterHandleValueChange: function() {
+        console.log(arguments);
+    },
+    handleClick: function() {
+        console.log(this.hasError());
+    },
     handleModalClose: function() {
         return confirm('閉じる？');
     },
@@ -46,11 +55,32 @@ var Page = React.createClass({
     },
     render: function() {
         // onRequestHideハンドラを指定しても動かない. 不可解・・・
-        var modal = (
+        const modal = (
             <ModalSample onClose={this.handleModalClose} />
         );
         return (
             <div className="Page container">
+                <form>
+                    <InputField label="ユーザID"
+                                required={true}
+                                placeholder="メールアドレス形式"
+                                maxCharCount={100}
+                                type="text"
+                                initialValue=""
+                                descriptor="userId"
+                                onValueChange={this.handleValueChange}
+                    />
+                    <InputField label="パスワード"
+                                required={true}
+                                placeholder="メールアドレス形式"
+                                maxCharCount={100}
+                                type="text"
+                                initialValue=""
+                                descriptor="password"
+                                onValueChange={this.handleValueChange}
+                    />
+                    <Button bsStyle="success" onClick={this.handleClick}><Glyphicon glyph="ok" /></Button>
+                </form>
                 <h1>Bootstrap Components !</h1>
                 <ButtonToolbar>
                     <Button bsStyle="default">Default</Button>

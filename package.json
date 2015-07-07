@@ -9,7 +9,9 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "babelify": "^6.1.2",
     "browserify": "^10.2.4",
+    "fluxxor": "^1.6.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.3.1",
     "gulp-less": "^3.0.3",

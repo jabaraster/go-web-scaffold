@@ -21,7 +21,8 @@ func main() {
 	resoureMux := web.New()
     resoureMux.Use(middleware.JsonAuthenticator)
 	resoureMux.Get("/resource/order/", handler.AllOrdersHandler)
-	resoureMux.Get("/resource/app-user/", handler.AllAppUsersHandler)
+    resoureMux.Get("/resource/app-user/", handler.AllAppUsersHandler)
+    resoureMux.Post("/resource/app-user/", handler.AddAppUserHandler)
 
 	staticMux := web.New()
 	staticMux.Get("/css/*", handler.GetAssetsHandlerWithContentType("text/css", ASSET_ROOT))

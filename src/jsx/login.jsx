@@ -1,17 +1,17 @@
 'use strict';
 
-var request = require('./_app-ajax.js');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var Button = Bootstrap.Button;
-var Input = Bootstrap.Input;
-var Popover = Bootstrap.Popover;
-var OverlayTrigger = Bootstrap.OverlayTrigger;
-var InputField = require('./_input-field.jsx');
-var Glyphicon = Bootstrap.Glyphicon
-var Message = require('./_message.jsx');
+const request = require('./component/app-ajax.js');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const Button = Bootstrap.Button;
+const Input = Bootstrap.Input;
+const Popover = Bootstrap.Popover;
+const OverlayTrigger = Bootstrap.OverlayTrigger;
+const InputField = require('./component/input-field.jsx');
+const Glyphicon = Bootstrap.Glyphicon
+const Message = require('./component/message.jsx');
 
-var Page = React.createClass({
+const Page = React.createClass({
     getInitialState: function() {
         return {
             errors: {},
@@ -21,7 +21,7 @@ var Page = React.createClass({
         };
     },
     hasError: function() {
-        for (var p in this.state.errors) {
+        for (const p in this.state.errors) {
             if (this.state.errors[p]) {
                 return true;
             }
@@ -45,7 +45,6 @@ var Page = React.createClass({
             type('form').
             send({ userId: this.state.userId, password: this.state.password }).
             end((err, res) => {
-                console.log(arguments);
                 if (err) {
                     this.setState({ messages: [err] });
                     return;

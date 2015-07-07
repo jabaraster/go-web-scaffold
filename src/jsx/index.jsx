@@ -1,17 +1,16 @@
 'use strict';
 
-var request = require('superagent');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var ButtonToolbar = Bootstrap.ButtonToolbar;
-var ButtonGroup = Bootstrap.ButtonGroup;
-var Button = Bootstrap.Button;
-var Modal = Bootstrap.Modal;
-var ModalTrigger = Bootstrap.ModalTrigger;
-var Glyphicon = Bootstrap.Glyphicon
-var LinkButton = require('./_link-button.jsx');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const ButtonToolbar = Bootstrap.ButtonToolbar;
+const ButtonGroup = Bootstrap.ButtonGroup;
+const Button = Bootstrap.Button;
+const Modal = Bootstrap.Modal;
+const ModalTrigger = Bootstrap.ModalTrigger;
+const Glyphicon = Bootstrap.Glyphicon
+const LinkButton = require('./component/link-button.jsx');
 
-var Page = React.createClass({
+const Page = React.createClass({
     render: function() {
         return (
             <div className="Page container">

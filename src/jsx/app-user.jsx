@@ -1,43 +1,36 @@
 'use strict';
 
-var request = require('superagent');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var Button = Bootstrap.Button;
-var Glyphicon = Bootstrap.Glyphicon;
-var Accordion = Bootstrap.Accordion;
-var Panel = Bootstrap.Panel;
-var Input = Bootstrap.Input;
-var Modal = Bootstrap.Modal;
-var Popover = Bootstrap.Popover;
-var OverlayTrigger = Bootstrap.OverlayTrigger;
-var InputField = require('./_input-field.jsx');
+const request = require('./component/app-ajax.js');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const Button = Bootstrap.Button;
+const Glyphicon = Bootstrap.Glyphicon;
+const Accordion = Bootstrap.Accordion;
+const Panel = Bootstrap.Panel;
+const Input = Bootstrap.Input;
+const Modal = Bootstrap.Modal;
+const Popover = Bootstrap.Popover;
+const OverlayTrigger = Bootstrap.OverlayTrigger;
+const InputField = require('./component/input-field.jsx');
+const Message = require('./component/message.jsx');
 
-var AppUserEditor = React.createClass({
+const AppUserEditor = React.createClass({
     propTypes: {
         initialValue: React.PropTypes.object,
         onSave: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {
-            userId: '',
-            userIdError: '',
-            password: '',
-            passwordConfirmation: ''
+            errors: {},
+            messages: []
         };
     },
     componentDidMount: function() {
         this.resetValues();
     },
     handleValueChange: function(e) {
-        var s = {};
+        const s = {};
         s[e.descriptor] = e.value;
-        this.setState(s);
-    },
-    handleTextValueChange: function(propertyName, e) {
-        console.log(arguments);
-        var s = {};
-        s[propertyName] = e.target.value;
         this.setState(s);
     },
     resetValues: function() {
@@ -45,13 +38,13 @@ var AppUserEditor = React.createClass({
             return;
         }
         this.setState({
-            userId: this.props.initialValues.UserId,
+            userId: '',
             password: '',
             passwordConfirmation: ''
         });
     },
     save: function() {
-        var hasError = false;
+        let hasError = false;
         if (!this.state.appUserUserId) {
             this.setState({ hasUserIdError: true, userIdError: '必須入力です.' });
             hasError = true;
@@ -62,13 +55,26 @@ var AppUserEditor = React.createClass({
         if (hasError) {
             return;
         }
-        // TODO
-        var e = {
-            UserId: this.state.userId,
-            Password: this.state.password,
-            PasswordConfirmation: this.state.passwordConfirmation
+        const e = {
+            userId: this.state.userId,
+            password: this.state.password,
+            passwordConfirmation: this.state.passwordConfirmation
         };
-        this.props.onSave(e);
+        request.post('/app-user/').
+            type('form').
+            send(e).
+        end((err, res) => {
+            if (err) {
+                this.setState({ messages: [err] });
+                return;
+            }
+            if (res.body.error) {
+                this.setState({ messages: [res.body.error] });
+                return;
+            }
+            this.setState({ messages: [] });
+            this.props.onSave(e);
+        });
     },
     render: function() {
         return (
@@ -106,12 +112,13 @@ var AppUserEditor = React.createClass({
                     <Button bsStyle="primary" onClick={this.resetValues}><Glyphicon glyph="refresh" /> 初期値に戻す</Button>
                     <Button bsStyle="success" onClick={this.save}><Glyphicon glyph="ok" /> 保存</Button>
                 </div>
+                <Message messages={this.state.messages} />
             </div>
         );
     }
 });
 
-var AppUserEditorDialog = React.createClass({
+const AppUserEditorDialog = React.createClass({
     propTypes: {
         show: React.PropTypes.bool.isRequired,
         onSave: React.PropTypes.func.isRequired,
@@ -131,7 +138,7 @@ var AppUserEditorDialog = React.createClass({
     }
 });
 
-var AppUserList = React.createClass({
+const AppUserList = React.createClass({
     propTypes: {
     },
     getInitialState: function() {
@@ -141,7 +148,7 @@ var AppUserList = React.createClass({
         };
     },
     componentDidMount: function() {
-        request.get('/resource/app-user/').
+        request.get('/app-user/').
             end((err, res) => {
                 this.setState({ appUsers: res.body });
             });
@@ -157,7 +164,7 @@ var AppUserList = React.createClass({
         this.setState({ openDialog: false });
     },
     render: function() {
-        var rows = this.state.appUsers.map((appUser, idx) => {
+        const rows = this.state.appUsers.map((appUser, idx) => {
             return (
                 <Panel header={appUser.UserId} eventKey={idx} key={appUser.ID}>
                     <AppUserEditor initialValues={appUser} onSave={this.saveNewUser} />
@@ -176,7 +183,7 @@ var AppUserList = React.createClass({
     }
 });
 
-var Page = React.createClass({
+const Page = React.createClass({
     render: function() {
         return (
             <div className="Page container">

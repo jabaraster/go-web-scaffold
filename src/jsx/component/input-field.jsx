@@ -1,13 +1,13 @@
 'use strict';
 
-var $ = require('jquery');
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var Input = Bootstrap.Input;
-var Popover = Bootstrap.Popover;
-var OverlayTrigger = Bootstrap.OverlayTrigger;
+const $ = require('jquery');
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const Input = Bootstrap.Input;
+const Popover = Bootstrap.Popover;
+const OverlayTrigger = Bootstrap.OverlayTrigger;
 
-var InputField = React.createClass({
+const InputField = React.createClass({
     propTypes: {
         required: React.PropTypes.bool.isRequired,
         placeholder: React.PropTypes.string.isRequired,
@@ -29,7 +29,7 @@ var InputField = React.createClass({
         if (this.props.focus) {
             $(React.findDOMNode(this.refs.textField)).find('input').focus();
         }
-        var err = '';
+        let err = '';
         if (this.props.required === true && this.props.initialValue.length === 0) {
             err = '必須入力です.';
         }
@@ -42,7 +42,7 @@ var InputField = React.createClass({
         });
     },
     handleValueChange: function(e) {
-        var newValue = e.target.value;
+        const newValue = e.target.value;
         if (this.props.required === true) {
             if (newValue.length === 0) {
                 this.setState({ error: '必須入力です.', value: newValue }, () => {

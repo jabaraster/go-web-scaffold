@@ -9,23 +9,25 @@
 var gulp = require('gulp');
 var less = require('gulp-less');
 var autoprefixer = require('gulp-autoprefixer');
-var reactify = require('reactify');
 var uglifyjs = require('gulp-uglify');
 var uglifycss = require('gulp-uglifycss');
 var plumber = require("gulp-plumber");
 var browserify = require('browserify');
+// var reactify = require('reactify');
+var babelify = require('babelify');
 var streamify = require('gulp-streamify');
 var source = require('vinyl-source-stream');
 var logger = require('gulp-logger');
 
 gulp.task('watch-jsx', function() {
-    gulp.watch(['src/jsx/**/*.jsx', '!src/jsx/**/_*.jsx'], function(e) {
+    gulp.watch(['src/jsx/*.jsx'], function(e) {
         var tokens = e.path.split('/');
         var fileName = tokens[tokens.length - 1].split('.')[0];
         browserify({
                 entries: [e.path],
-                transform: [[reactify, { harmony: true }]],
-                debug: false // trueにするとsourcemapが生成される. 開発には有用だが、サイズが大きくなる
+//                transform: [[reactify, { harmony: true }]],
+                transform: [babelify],
+                debug: true // trueにするとsourcemapが生成される. 開発には有用だが、サイズが大きくなる
             })
             .bundle()
             .on("error", function (err) { console.log("Error : " + err.message); })

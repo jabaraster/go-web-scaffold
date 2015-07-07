@@ -1,18 +1,18 @@
 'use strict';
 
-var React = require('react/addons');
+const React = require('react/addons');
 
-var Message = React.createClass({
+const Message = React.createClass({
     propTypes: {
         messages: React.PropTypes.array.isRequired
     },
     render: function() {
-        var rows = this.props.messages.map((msg, idx) => {
+        const rows = this.props.messages.map((msg, idx) => {
             return (
                 <li key={`Message_${idx}`}>{msg}</li>
             );
         });
-        var classes = React.addons.classSet({
+        const classes = React.addons.classSet({
             Message: true,
             hidden: this.props.messages.length === 0
         });

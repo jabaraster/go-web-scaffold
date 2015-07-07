@@ -1,9 +1,9 @@
-var React = require('react');
-var Bootstrap = require('react-bootstrap');
-var Button = Bootstrap.Button;
-var Glyphicon = Bootstrap.Glyphicon;
+const React = require('react');
+const Bootstrap = require('react-bootstrap');
+const Button = Bootstrap.Button;
+const Glyphicon = Bootstrap.Glyphicon;
 
-var LinkButton = React.createClass({
+const LinkButton = React.createClass({
     propTypes: {
         href: React.PropTypes.string.isRequired,
         text: React.PropTypes.string,
@@ -14,7 +14,7 @@ var LinkButton = React.createClass({
         location.href = this.props.href;
     },
     render: function() {
-        var glyph = this.props.glyph ? (<Glyphicon glyph={this.props.glyph} />) : (<span/>);
+        const glyph = this.props.glyph ? (<Glyphicon glyph={this.props.glyph} />) : (<span/>);
         return (
             <Button bsStyle={this.props.style} onClick={this.handleClick}>
                 {glyph}

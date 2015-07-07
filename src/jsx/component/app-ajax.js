@@ -1,6 +1,6 @@
 'use strict';
 
-var request = require('superagent');
+const request = require('superagent');
 
 module.exports = {
     get: function(url) {
