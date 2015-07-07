@@ -30017,20 +30017,64 @@ var ModalTrigger = Bootstrap.ModalTrigger;
 var Glyphicon = Bootstrap.Glyphicon
 var LinkButton = require('./_link-button.jsx');
 
-var Page = React.createClass({displayName: "Page",
+// Modalはコンポーネントで包まないとクローズボタンが動作しなくなる. 不可解・・・
+var ModalSample = React.createClass({displayName: "ModalSample",
+    handle: function() {
+        if (this.props.onClose() === false) {
+            return;
+        }
+        this.props.onRequestHide(); // これを呼ぶとモーダルが消える. 不可解・・・
+    },
     render: function() {
         return (
+           React.createElement(Modal, React.__spread({},  this.props, 
+                  {title: ("モーダルダイアログ"), 
+                  animation: true, 
+                  backdrop: false
+           }), 
+               React.createElement("div", {className: "modal-body"}, 
+                   "本文"
+               ), 
+               React.createElement("div", {className: "modal-footer"}, 
+                   React.createElement(Button, {bsStyle: "primary", onClick: this.handle}, "Close")
+               )
+           )
+        );
+    }
+});
+
+var Page = React.createClass({displayName: "Page",
+    handleModalClose: function() {
+        return confirm('閉じる？');
+    },
+    handleLogout: function() {
+        location.href = "/logout";
+    },
+    render: function() {
+        // onRequestHideハンドラを指定しても動かない. 不可解・・・
+        var modal = (
+            React.createElement(ModalSample, {onClose: this.handleModalClose})
+        );
+        return (
             React.createElement("div", {className: "Page container"}, 
-                React.createElement(ButtonGroup, null, 
-                    React.createElement(LinkButton, {style: "primary", text: "Reload", glyph: "refresh", href: "/"}), 
-                    React.createElement(LinkButton, {style: "primary", text: "Logout", glyph: "log-out", href: "/logout"})
+                React.createElement("h1", null, "Bootstrap Components !"), 
+                React.createElement(ButtonToolbar, null, 
+                    React.createElement(Button, {bsStyle: "default"}, "Default"), 
+                    React.createElement(Button, {bsStyle: "primary"}, "Primary"), 
+                    React.createElement(Button, {bsStyle: "success"}, "Success"), 
+                    React.createElement(Button, {bsStyle: "warning"}, "Warning"), 
+                    React.createElement(Button, {bsStyle: "danger"}, "Danger")
                 ), 
-                React.createElement(ButtonGroup, null, 
-                    React.createElement(LinkButton, {style: "default", text: "サンプルページ", href: "/page/sample/"})
+                React.createElement("hr", null), 
+                React.createElement(ButtonGroup, null
                 ), 
-                React.createElement(ButtonGroup, null, 
-                    React.createElement(LinkButton, {style: "success", text: "ユーザマスタメンテ", href: "/page/app-user/"})
-                )
+                React.createElement("hr", null), 
+                React.createElement(ModalTrigger, {modal: modal}, 
+                    React.createElement(Button, {bsStyle: "primary"}, React.createElement(Glyphicon, {glyph: "search"}), " ", ("Show Dialog"))
+                ), 
+                React.createElement("hr", null), 
+                React.createElement(LinkButton, {style: "default", text: "Reload", glyph: "refresh", href: "/"}), 
+                React.createElement(LinkButton, {style: "primary", text: "Logout", glyph: "log-out", href: "/logout"})
             )
         );
     }

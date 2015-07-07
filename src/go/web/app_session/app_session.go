@@ -5,7 +5,6 @@ import (
     "net/http"
     "github.com/gorilla/sessions"
     "encoding/json"
-    "fmt"
 )
 
 
@@ -32,7 +31,6 @@ func SetLoginUser(loginUser LoginUser, w http.ResponseWriter, r *http.Request) {
 
 func IsLogin(r *http.Request) bool {
     session := mustGetSession(r)
-    fmt.Println("IsLogin -> ", session)
     _, found := session.Values[sessionKey_loginUser]
     return found
 }

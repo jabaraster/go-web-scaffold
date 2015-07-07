@@ -39401,7 +39401,7 @@ var AppUserEditorDialog = React.createClass({displayName: "AppUserEditorDialog",
         return (
             React.createElement(Modal, {show: this.props.show, onHide: this.props.onCancel}, 
                 React.createElement(Modal.Header, {closeButton: true}, 
-                    React.createElement(Modal.Title, null, "Modal heading")
+                    React.createElement(Modal.Title, null, "ユーザ新規登録")
                 ), 
                 React.createElement(Modal.Body, null, 
                     React.createElement(AppUserEditor, {onSave: this.props.onSave})

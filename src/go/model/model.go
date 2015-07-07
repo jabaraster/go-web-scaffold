@@ -54,3 +54,19 @@ type notFoundImpl struct {
 func NewNotFound() NotFound {
     return notFoundImpl{}
 }
+
+type InvalidValue interface {
+    GetDescription() string
+}
+
+type invalidValue struct {
+    description string
+}
+
+func (e *invalidValue) GetDescription() string {
+    return e.description
+}
+
+func NewInvalidValue(description string) InvalidValue {
+    return &invalidValue{ description: description }
+}

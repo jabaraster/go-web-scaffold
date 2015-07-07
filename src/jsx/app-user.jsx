@@ -121,7 +121,7 @@ var AppUserEditorDialog = React.createClass({
         return (
             <Modal show={this.props.show} onHide={this.props.onCancel}>
                 <Modal.Header closeButton>
-                    <Modal.Title>Modal heading</Modal.Title>
+                    <Modal.Title>ユーザ新規登録</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <AppUserEditor onSave={this.props.onSave} />

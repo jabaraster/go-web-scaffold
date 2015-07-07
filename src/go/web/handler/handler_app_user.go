@@ -5,7 +5,25 @@ import (
     "../app_session"
 	"net/http"
     "time"
+    "strings"
 )
+
+func AddAppUserHandler(w http.ResponseWriter, r *http.Request) {
+    userId := strings.TrimSpace(r.FormValue("userId"))
+    password := strings.TrimSpace(r.FormValue("password"))
+    passwordConfirmation := strings.TrimSpace(r.FormValue("passwordConfirmation"))
+
+    newUser, invalidValue := model.AddAppUser(userId, password, passwordConfirmation)
+    if invalidValue != nil {
+        writeErrorJsonResponse(invalidValue.GetDescription(), w)
+        return
+    }
+    ret := map[string]interface{} {
+        "error": "",
+        "newEntity": newUser,
+    }
+    writeJsonResponse(ret, w)
+}
 
 func AllAppUsersHandler(w http.ResponseWriter, r *http.Request) {
 	writeJsonResponse(model.GetAllAppUsers(), w)

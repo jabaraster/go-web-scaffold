@@ -37,6 +37,38 @@ func Authenticate(userId string, password string) bool {
     return c == 0
 }
 
+func AddAppUser(userId, password, passwordConfirmation string) (*AppUser, InvalidValue) {
+    if len(userId) == 0 || len(password) == 0 || len(passwordConfirmation) == 0 {
+        return nil, NewInvalidValue("入力されていない項目があります.")
+    }
+
+    if password != passwordConfirmation {
+        return nil, NewInvalidValue("パスワードが一致しません.")
+    }
+
+    newUser := AppUser {
+        UserId: userId,
+    }
+    newCredential := AppUserCredential{
+        AppUser: newUser,
+        Password: []byte(password),
+    }
+    tx := _db.Begin()
+    defer func() {
+        if err := recover(); err != nil {
+            tx.Rollback()
+            panic(err)
+        } else {
+            tx.Commit()
+        }
+    }()
+    // TODO ユーザIDの重複検査
+    if err := tx.Create(newCredential).Error; err != nil {
+        panic(err)
+    }
+    return &newUser, nil
+}
+
 const (
 	adminUserId = "ah@jabara.info"
     adminUserPassword = "hogehoge"
