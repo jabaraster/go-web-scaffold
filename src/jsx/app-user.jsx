@@ -31,6 +31,7 @@ const AppUserEditor = React.createClass({
         };
     },
     resetValues: function() {
+        // TODO 今の作りではInputFieldに値を与えることができない.
         if (!this.props.initialValues) {
             return;
         }
@@ -51,6 +52,7 @@ const AppUserEditor = React.createClass({
         const e = {
             userId: this.state.userId,
             password: this.state.password,
+            passwordConfirmation: this.state.passwordConfirmation,
         };
         request.post('/app-user/').
             type('form').

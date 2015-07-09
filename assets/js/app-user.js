@@ -41277,6 +41277,7 @@ var AppUserEditor = React.createClass({
         };
     },
     resetValues: function resetValues() {
+        // TODO 今の作りではInputFieldに値を与えることができない.
         if (!this.props.initialValues) {
             return;
         }
@@ -41298,7 +41299,8 @@ var AppUserEditor = React.createClass({
         }
         var e = {
             userId: this.state.userId,
-            password: this.state.password
+            password: this.state.password,
+            passwordConfirmation: this.state.passwordConfirmation
         };
         request.post('/app-user/').type('form').send(e).end(function (err, res) {
             if (err) {
@@ -41537,7 +41539,6 @@ var InputField = React.createClass({
     handleValueChange: function handleValueChange(e) {
         var _this2 = this;
 
-        console.log(e);
         var newValue = e.target.value;
         if (this.props.required === true) {
             if (newValue.length === 0) {

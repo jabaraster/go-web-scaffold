@@ -52,7 +52,10 @@ func AddAppUser(userId, password string) (*AppUser, InvalidValue) {
 		}
 	}()
 
-	// TODO ユーザIDの重複検査
+    _, nf := getAppUserByUserId(tx, userId)
+    if nf == nil {
+        return nil, NewInvalidValue("ユーザIDが使われています.")
+    }
 
 	newUser := AppUser{
 		UserId: userId,
