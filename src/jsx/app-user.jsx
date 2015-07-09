@@ -13,52 +13,44 @@ const Popover = Bootstrap.Popover;
 const OverlayTrigger = Bootstrap.OverlayTrigger;
 const InputField = require('./component/input-field.jsx');
 const Message = require('./component/message.jsx');
+const FormInputMixin = require('./mixin/form-input.js');
 
 const AppUserEditor = React.createClass({
+    mixins: [FormInputMixin],
+
     propTypes: {
-        initialValue: React.PropTypes.object,
+        initialValues: React.PropTypes.object,
         onSave: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {
-            errors: {},
+            userId: this.props.initialValues ? this.props.initialValues.UserId : '',
+            password: '',
+            passwordConfirmation: '',
             messages: []
         };
     },
-    componentDidMount: function() {
-        this.resetValues();
-    },
-    handleValueChange: function(e) {
-        const s = {};
-        s[e.descriptor] = e.value;
-        this.setState(s);
-    },
     resetValues: function() {
-        if (!this.props.initialValue) {
+        if (!this.props.initialValues) {
             return;
         }
         this.setState({
-            userId: '',
+            userId: this.props.initialValues ? this.props.initialValues.UserId : '',
             password: '',
             passwordConfirmation: ''
         });
     },
     save: function() {
-        let hasError = false;
-        if (!this.state.appUserUserId) {
-            this.setState({ hasUserIdError: true, userIdError: '必須入力です.' });
-            hasError = true;
+        if (this.hasError()) {
+            return;
         }
-        if (!this.state.password) {
-        }
-
-        if (hasError) {
+        if (this.state.password !== this.state.passwordConfirmation) {
+            this.setState({ messages: ['パスワードが一致していません.'] });
             return;
         }
         const e = {
             userId: this.state.userId,
             password: this.state.password,
-            passwordConfirmation: this.state.passwordConfirmation
         };
         request.post('/app-user/').
             type('form').
@@ -160,7 +152,6 @@ const AppUserList = React.createClass({
         this.setState({ openDialog: false });
     },
     saveNewUser: function(e) {
-        console.log(e);
         this.setState({ openDialog: false });
     },
     render: function() {

@@ -42,6 +42,7 @@ const InputField = React.createClass({
         });
     },
     handleValueChange: function(e) {
+        console.log(e);
         const newValue = e.target.value;
         if (this.props.required === true) {
             if (newValue.length === 0) {

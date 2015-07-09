@@ -191,8 +191,8 @@ func writeJsonResponse(data interface{}, w http.ResponseWriter) {
 }
 
 func writeErrorJsonResponse(error string, w http.ResponseWriter) {
-    ret := map[string]interface{} {
-        "error": error,
-    }
-    writeJsonResponse(ret, w)
+	ret := map[string]interface{}{
+		"error": error,
+	}
+	writeJsonResponse(ret, w)
 }

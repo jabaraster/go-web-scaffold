@@ -10,31 +10,17 @@ const OverlayTrigger = Bootstrap.OverlayTrigger;
 const InputField = require('./component/input-field.jsx');
 const Glyphicon = Bootstrap.Glyphicon
 const Message = require('./component/message.jsx');
+const FormInputMixin = require('./mixin/form-input.js');
 
 const Page = React.createClass({
+    mixins: [FormInputMixin],
+
     getInitialState: function() {
         return {
-            errors: {},
             userId: '',
             password: '',
             messages: []
         };
-    },
-    hasError: function() {
-        for (const p in this.state.errors) {
-            if (this.state.errors[p]) {
-                return true;
-            }
-        }
-        return false;
-    },
-    handleValueChange: function(e) {
-        this.state.errors[e.descriptor] = e.error;
-        if (e.error) {
-            return;
-        }
-        this.state[e.descriptor] = e.value;
-        this.setState(this.state);
     },
     handleLoginClick: function() {
         if (this.hasError()) {

@@ -1,8 +1,8 @@
 package model
 
 import (
-	"../env"
 	"fmt"
+	"github.com/jabaraster/go-web-scaffold/src/go/env"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
@@ -45,28 +45,34 @@ func init() {
 }
 
 type NotFound interface {
-    // nodef
+	// nodef
 }
 type notFoundImpl struct {
-    // nodef
+	// nodef
 }
 
 func NewNotFound() NotFound {
-    return notFoundImpl{}
+	return notFoundImpl{}
 }
 
 type InvalidValue interface {
-    GetDescription() string
+	GetDescription() string
 }
 
 type invalidValue struct {
-    description string
+	description string
 }
 
 func (e *invalidValue) GetDescription() string {
-    return e.description
+	return e.description
 }
 
 func NewInvalidValue(description string) InvalidValue {
-    return &invalidValue{ description: description }
+	return &invalidValue{description: description}
+}
+
+func mustInsert(db *gorm.DB, entity interface{}) {
+	if err := db.Create(entity).Error; err != nil {
+		panic(err)
+	}
 }
