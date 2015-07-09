@@ -74,30 +74,6 @@ func IsDebugMode() bool {
 	return strings.EqualFold(ModeDebug, mode)
 }
 
-func DbKind() string {
-	return dbKind
-}
-
-func PostgresHost() string {
-	return postgresHost
-}
-
-func PostgresDbName() string {
-	return postgresDbName
-}
-
-func PostgresUser() string {
-	return postgresUser
-}
-
-func PostgresPassword() string {
-	return postgresPassword
-}
-
-func PostgresSslMode() string {
-	return postgresSslMode
-}
-
 func dump(key string, val string) {
 	fmt.Printf("%s -> %s\n", key, val)
 }
