@@ -1,0 +1,25 @@
+{
+  "Database": {
+    "Kind": "SQLite",
+    "SQLite": {
+      "DatabaseFilePath": "./app.db"
+    },
+    "PostgreSQL": {
+      "Host": "${PG_HOST}",
+      "Port": "${PG_POrT}",
+      "User": "${PG_USER}",
+      "Password": "${PG_PASSWORD}",
+      "Database": "${PG_DATABASE}"
+    }
+  },
+  "Session": {
+    "Kind": "SQLite",
+    "Cookie": {
+      "SecretPhrase": "secret-phrase"
+    },
+    "SQLite": {
+      "DatabaseFilePath": "./session.db",
+      "TableName": "sessions_store"
+    }
+  }
+}

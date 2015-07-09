@@ -5,15 +5,38 @@ import (
 	"github.com/gorilla/sessions"
 	"net/http"
 	"time"
+    "github.com/jabaraster/go-web-scaffold/src/go/configuration"
+    "github.com/michaeljs1990/sqlitestore"
 )
 
-var store = sessions.NewCookieStore([]byte("secret-token"))
+var _store sessions.Store
 
 const (
-	defaultSessionName = "default-session"
-
+    defaultSessionName = "default-app-session"
 	sessionKey_loginUser = "sessionKey_loginUser"
 )
+
+func init() {
+    config := configuration.Get().Session
+    switch (config.Kind) {
+    case configuration.SessionKind_Cookie:
+        _store = sessions.NewCookieStore([]byte(config.Cookie.SecretPhrase))
+        return
+    case configuration.SessionKind_SQLite:
+        store, err := sqlitestore.NewSqliteStore(
+                config.SQLite.DatabaseFilePath,
+                config.SQLite.TableName,
+                "/", // TODO 意味のつかめないパラメータ
+                config.MaxAge,
+                []byte(config.SQLite.SecretPhrase))
+        if err != nil {
+            panic(err)
+        }
+        _store = store
+        return
+    }
+    panic(config)
+}
 
 type LoginUser struct {
 	UserId        string
@@ -59,7 +82,7 @@ func remove(key string, w http.ResponseWriter, r *http.Request) {
 }
 
 func mustGetSession(r *http.Request) *sessions.Session {
-	session, err := store.Get(r, defaultSessionName)
+	session, err := _store.Get(r, defaultSessionName)
 	if err != nil {
 		panic(err)
 	}

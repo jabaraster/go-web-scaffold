@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+    "regexp"
 )
 
 const (
@@ -99,6 +100,16 @@ func PostgresSslMode() string {
 
 func dump(key string, val string) {
 	fmt.Printf("%s -> %s\n", key, val)
+}
+
+func ResolveEnv(value string) string {
+    reg := regexp.MustCompile("\\$\\{(.+)\\}")
+    matches := reg.FindSubmatch([]byte(value))
+    if len(matches) < 2 {
+        return value
+    }
+    key := string(matches[1])
+    return getEnv(key, "")
 }
 
 func getEnv(key string, defaultValue string) string {

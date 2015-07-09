@@ -15,6 +15,7 @@ const (
 
 func main() {
 	env.Dump()
+//    configuration.Initialize("./configuratin.json")
 
 	// modelMuxやhtmlMuxには認証ミドルウェアを仕込む必要がある.
 
