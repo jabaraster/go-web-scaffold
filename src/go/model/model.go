@@ -24,7 +24,7 @@ func init() {
         _db = &db
         initializeDatabase()
     case configuration.DbKind_PostgreSQL:
-        cs := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=false",
+        cs := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
             env.ResolveEnv(config.PostgreSQL.Host),
             env.ResolveEnv(config.PostgreSQL.Port),
             env.ResolveEnv(config.PostgreSQL.User),
