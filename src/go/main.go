@@ -15,7 +15,7 @@ const (
 
 func main() {
 	env.Dump()
-//    configuration.Initialize("./configuratin.json")
+	//    configuration.Initialize("./configuratin.json")
 
 	// modelMuxやhtmlMuxには認証ミドルウェアを仕込む必要がある.
 
@@ -28,6 +28,11 @@ func main() {
 	staticMux := web.New()
 	staticMux.Get("/css/*", handler.GetAssetsHandlerWithContentType("text/css", ASSET_ROOT))
 	staticMux.Get("/js/*", handler.GetAssetsHandlerWithContentType("text/javascript", ASSET_ROOT))
+	staticMux.Get("/fonts/*.woff", handler.GetAssetsHandlerWithContentType("application/x-font-woff", ASSET_ROOT))
+	staticMux.Get("/fonts/*.woff2", handler.GetAssetsHandlerWithContentType("application/x-font-woff", ASSET_ROOT))
+	staticMux.Get("/fonts/*.eot", handler.GetAssetsHandlerWithContentType("application/vnd.ms-fontobject", ASSET_ROOT))
+	staticMux.Get("/fonts/*.svg", handler.GetAssetsHandlerWithContentType("image/svg+xml", ASSET_ROOT))
+	staticMux.Get("/fonts/*.ttf", handler.GetAssetsHandlerWithContentType("application/x-font-ttf", ASSET_ROOT))
 	staticMux.Get("/*", http.FileServer(http.Dir(ASSET_ROOT)))
 
 	htmlMux := web.New()

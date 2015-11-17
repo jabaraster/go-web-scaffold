@@ -2,7 +2,7 @@
   "Database": {
     "Kind": "SQLite",
     "SQLite": {
-      "DatabaseFilePath": "./app_.db"
+      "DatabaseFilePath": "./app.db"
     },
     "PostgreSQL": {
       "Host": "${PG_HOST}",

@@ -11,6 +11,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 type html struct {
@@ -85,6 +86,7 @@ func (e *staticFile) staticHandler(w http.ResponseWriter, r *http.Request) {
 		writeFile(e.assetsRoot+"/"+fileInfo.directory+"/"+fileInfo.name, w, r)
 		return
 	}
+	w.Header().Set("cache-control", fmt.Sprintf("max-age=%d", time.Hour*24*365)) //1年間キャッシュを有効にする
 	plainFileName := fileInfo.name[:li]
 	writeFile(e.assetsRoot+"/"+fileInfo.directory+"/"+plainFileName, w, r)
 }
