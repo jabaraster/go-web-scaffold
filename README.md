@@ -58,10 +58,11 @@ Go言語で開発します.
 ## ディレクトリ構成
 
 * ```src/go/```：```main.go```、```main_test.go```のみ格納.
-* ```src/env/```：envパッケージを格納. 環境変数周りの処理を実装.
-* ```src/model/```：modelパッケージを格納. DBテーブルに関連付くstructの定義、DBアクセス処理を実装.
-* ```src/web/```：webパッケージを格納. Web特有の処理を実装. あまり出番はないかな. 
-* ```src/web/handler/```：web/handlerパッケージを格納. クライアントからのリクエストを受け付けるメソッド(=handler)を実装.
+* ```src/go/configuration/```：configurationパッケージを格納. JSON形式の設定ファイルを読み込む機能を実装.
+* ```src/go/env/```：envパッケージを格納. 環境変数周りの処理を実装.
+* ```src/go/model/```：modelパッケージを格納. DBテーブルに関連付くstructの定義、DBアクセス処理を実装.
+* ```src/go/web/```：webパッケージを格納. Web特有の処理を実装. あまり出番はないかな. 
+* ```src/go/web/handler/```：web/handlerパッケージを格納. クライアントからのリクエストを受け付けるメソッド(=handler)を実装.
 
 その他、拡張は適宜検討.
 
